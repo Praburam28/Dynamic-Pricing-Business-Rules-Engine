@@ -1,4 +1,4 @@
-⚡ Dynamic Pricing & Business Rules Engine
+<h1 align="center">⚡ Dynamic Pricing & Business Rules Engine</h1>
 
 <p align="center">
   <strong>A reusable, configurable pricing platform for managing products, customers, promotions, and dynamic business rules without changing application source code.</strong>
@@ -39,7 +39,7 @@ Rules can consider:
 
 ⚙️ Rule execution strategy
 
-The pricing engine evaluates applicable rules and produces a transparent pricing breakdown.
+The pricing engine evaluates applicable rules and returns a transparent pricing breakdown.
 
 ✨ Key Features
 
@@ -77,7 +77,15 @@ Pagination and sorting
 
 Customer CRUD
 
-Customer types: Regular, Premium, Business, Wholesale
+Customer types:
+
+Regular
+
+Premium
+
+Business
+
+Wholesale
 
 Customer category
 
@@ -119,7 +127,7 @@ Start/end dates
 
 Active/inactive status
 
-Type
+Execution Type
 
 Purpose
 
@@ -174,7 +182,9 @@ Maximum discount
 
 Start/end dates
 
-Usage limits and tracking
+Usage limits
+
+Usage tracking
 
 Promotion validation
 
@@ -182,43 +192,65 @@ Activation/deactivation
 
 💰 Pricing Calculation
 
-┌──────────────────────┐
-│      Base Price      │
-└──────────┬───────────┘
-           ↓
-┌──────────────────────┐
-│   Applicable Rules   │
-└──────────┬───────────┘
-           ↓
-┌──────────────────────┐
-│      Discounts       │
-└──────────┬───────────┘
-           ↓
-┌──────────────────────┐
-│  Additional Charges  │
-└──────────┬───────────┘
-           ↓
-┌──────────────────────┐
-│      Promotion       │
-└──────────┬───────────┘
-           ↓
-┌──────────────────────┐
-│         Tax          │
-└──────────┬───────────┘
-           ↓
-┌──────────────────────┐
-│     Final Price      │
-└──────────────────────┘
+The pricing calculation follows a clear pipeline:
+
+flowchart TD
+    A[Base Price] --> B[Applicable Rules]
+    B --> C[Discounts]
+    C --> D[Additional Charges]
+    D --> E[Promotion]
+    E --> F[Tax]
+    F --> G[Final Price]
 
 🧪 Rule Testing
 
-Administrators can test rules with sample inputs before using them in production.
+Administrators can test pricing rules with sample inputs before using them in production.
+
+The tester evaluates:
+
+Rule conditions
+
+Customer information
+
+Product information
+
+Quantity
+
+Base price
+
+Match status
+
+Discount amount
 
 📊 Pricing History
 
-Calculations can record product, customer, quantity, original price, discount, tax, final price, promotion code, applied rules, and timestamp.
+Pricing calculations can record:
+
+Product
+
+Customer
+
+Quantity
+
+Location
+
+Promotion code
+
+Original price
+
+Discount
+
+Tax
+
+Final price
+
+Applied rules
+
+Calculation timestamp
 
 📈 Dashboard & Analytics
+
+The dashboard provides:
 
 Total calculations
 
@@ -230,7 +262,11 @@ Tax totals
 
 Final pricing value
 
-Active products, customers, and rules
+Active products
+
+Active customers
+
+Active pricing rules
 
 Recent calculations
 
@@ -242,41 +278,79 @@ Rule performance visualization
 
 ⚡ Redis Caching
 
-Redis caches frequently accessed pricing-rule data to reduce unnecessary database queries.
+Redis is used to cache frequently accessed pricing-rule data and reduce unnecessary database queries.
 
 🐳 Docker
 
-Docker Compose provides MySQL, Redis, and FastAPI backend services.
+Docker Compose provides containerized services for:
+
+MySQL
+
+Redis
+
+FastAPI Backend
 
 🏗️ System Architecture
 
-┌──────────────────────────────────────────────────────────────┐
-│                       React Frontend                         │
-│                  React + TypeScript + MUI                    │
-└─────────────────────────────┬────────────────────────────────┘
-                              │ REST / JSON
-                              ↓
-┌──────────────────────────────────────────────────────────────┐
-│                     FastAPI Backend                          │
-│                                                              │
-│       Routers → Services → Repositories → SQLAlchemy ORM    │
-│                                                              │
-│                 ┌────────────────────────┐                   │
-│                 │     Pricing Engine     │                   │
-│                 │                        │                   │
-│                 │ Condition Evaluator    │                   │
-│                 │ Rule Executor          │                   │
-│                 │ Discount Calculator    │                   │
-│                 │ Conflict Resolver      │                   │
-│                 │ Tax Calculator         │                   │
-│                 └────────────────────────┘                   │
-└──────────────────────┬───────────────────────┬───────────────┘
-                       │                       │
-                       ↓                       ↓
-              ┌────────────────┐      ┌────────────────┐
-              │     MySQL      │      │     Redis      │
-              │    Database    │      │     Cache      │
-              └────────────────┘      └────────────────┘
+flowchart TB
+    FE["React Frontend<br/>React + TypeScript + Material UI"]
+
+    API["FastAPI Backend"]
+
+    ROUTER["API Routers"]
+    SERVICE["Business Services"]
+    REPO["Repositories"]
+    ORM["SQLAlchemy ORM"]
+
+    ENGINE["Pricing Engine"]
+    EVAL["Condition Evaluator"]
+    EXEC["Rule Executor"]
+    DISC["Discount Calculator"]
+    CONFLICT["Conflict Resolver"]
+    TAX["Tax Calculator"]
+
+    DB[("MySQL 8.0")]
+    REDIS[("Redis 7")]
+
+    FE -->|REST / JSON| API
+    API --> ROUTER
+    ROUTER --> SERVICE
+    SERVICE --> REPO
+    REPO --> ORM
+    ORM --> DB
+
+    SERVICE --> ENGINE
+    ENGINE --> EVAL
+    ENGINE --> EXEC
+    ENGINE --> DISC
+    ENGINE --> CONFLICT
+    ENGINE --> TAX
+
+    SERVICE <--> REDIS
+
+Architecture Pattern
+
+Router
+   ↓
+Service
+   ↓
+Repository
+   ↓
+SQLAlchemy
+   ↓
+MySQL
+
+Pricing logic is kept independent from API routes:
+
+Pricing Service
+      ↓
+Pricing Engine
+      ↓
+Rule Evaluator
+      ↓
+Rule Executor
+      ↓
+Discount / Conflict / Tax Calculators
 
 🧰 Tech Stack
 
@@ -304,7 +378,7 @@ Database migrations
 
 Pydantic
 
-Validation
+Request/response validation
 
 MySQL 8.0
 
@@ -358,21 +432,53 @@ HTTP client
 
 React Router
 
-Routing
+Application routing
 
 Chart.js
 
-Analytics
+Analytics visualization
 
 Development Tools
 
+Tool
+
+Purpose
+
 Visual Studio Code
-Git / GitHub
-Docker / Docker Compose
+
+Development
+
+Git
+
+Version control
+
+GitHub
+
+Source control
+
+Docker
+
+Containerization
+
+Docker Compose
+
+Service orchestration
+
 MySQL Workbench
+
+Database management
+
 Postman
+
+API testing
+
 Swagger / OpenAPI
+
+API documentation
+
 Figma
+
+UI design
 
 📁 Project Structure
 
@@ -385,6 +491,7 @@ dynamic-pricing-business-rules-engine/
 │   │   │   ├── exceptions.py
 │   │   │   ├── logging.py
 │   │   │   └── security.py
+│   │   │
 │   │   ├── engine/
 │   │   │   ├── condition_evaluator.py
 │   │   │   ├── conflict_resolver.py
@@ -392,6 +499,7 @@ dynamic-pricing-business-rules-engine/
 │   │   │   ├── pricing_engine.py
 │   │   │   ├── rule_executor.py
 │   │   │   └── tax_calculator.py
+│   │   │
 │   │   ├── models/
 │   │   ├── repositories/
 │   │   ├── routers/
@@ -402,6 +510,7 @@ dynamic-pricing-business-rules-engine/
 │   │   ├── database.py
 │   │   ├── dependencies.py
 │   │   └── main.py
+│   │
 │   ├── alembic/
 │   ├── tests/
 │   ├── .env
@@ -429,35 +538,69 @@ dynamic-pricing-business-rules-engine/
 
 🗄️ Database Design
 
-Core tables:
+The application uses MySQL 8.0.
+
+Core Tables
+
+Table
+
+Purpose
 
 roles
-  └── users
+
+Application roles
+
+users
+
+User accounts
 
 categories
-  └── products
+
+Product categories
+
+products
+
+Products and base prices
 
 customers
 
+Customer information
+
 pricing_rules
-  ├── rule_conditions
-  └── rule_actions
+
+Dynamic pricing rules
+
+rule_conditions
+
+Rule conditions
+
+rule_actions
+
+Rule actions
 
 promotions
 
+Promotion configuration
+
 pricing_calculations
-  └── calculation_rules
+
+Pricing calculation history
+
+calculation_rules
+
+Rules applied to calculations
 
 Relationships
 
-Role ────────────────< User
-Category ────────────< Product
-PricingRule ─────────< RuleCondition
-PricingRule ─────────< RuleAction
-Product ─────────────< PricingCalculation
-Customer ────────────< PricingCalculation
-PricingCalculation ──< CalculationRule
-PricingRule ─────────< CalculationRule
+erDiagram
+    ROLES ||--o{ USERS : has
+    CATEGORIES ||--o{ PRODUCTS : contains
+    PRICING_RULES ||--o{ RULE_CONDITIONS : contains
+    PRICING_RULES ||--o{ RULE_ACTIONS : contains
+    PRODUCTS ||--o{ PRICING_CALCULATIONS : calculated_for
+    CUSTOMERS ||--o{ PRICING_CALCULATIONS : calculated_for
+    PRICING_CALCULATIONS ||--o{ CALCULATION_RULES : records
+    PRICING_RULES ||--o{ CALCULATION_RULES : applied_as
 
 Database migrations are managed using Alembic.
 
@@ -511,10 +654,25 @@ COMBINABLE
 
 Suppose:
 
-Product Base Price = ₹1,000
-Quantity            = 10
-Customer Type       = PREMIUM
-Tax Rate            = 18%
+Input
+
+Value
+
+Product Base Price
+
+₹1,000
+
+Quantity
+
+10
+
+Customer Type
+
+PREMIUM
+
+Tax Rate
+
+18%
 
 Applicable rules:
 
@@ -523,22 +681,45 @@ Bulk Discount    = 5%
 
 Calculation:
 
+Step
+
+Calculation
+
+Result
+
 Original Price
-₹1,000 × 10 = ₹10,000
+
+₹1,000 × 10
+
+₹10,000
 
 Total Discount
-10% + 5% = ₹1,500
+
+15% of ₹10,000
+
+₹1,500
 
 Price After Discount
-₹10,000 - ₹1,500 = ₹8,500
+
+₹10,000 − ₹1,500
+
+₹8,500
 
 Tax
-18% of ₹8,500 = ₹1,530
+
+18% of ₹8,500
+
+₹1,530
 
 Final Price
-₹8,500 + ₹1,530 = ₹10,030
+
+₹8,500 + ₹1,530
+
+₹10,030
 
 🔐 Security
+
+The application includes:
 
 JWT Bearer authentication
 
@@ -552,7 +733,7 @@ Active/inactive user validation
 
 Pydantic request validation
 
-Environment-based secrets
+Environment-based configuration
 
 No arbitrary SQL or executable rule code
 
@@ -618,9 +799,13 @@ docker exec -it dynamic_pricing_backend alembic upgrade head
 🖥️ Backend Setup
 
 cd backend
+
 python -m venv .venv
+
 .\.venv\Scripts\Activate.ps1
+
 pip install -r requirements.txt
+
 uvicorn app.main:app --reload
 
 Backend:
@@ -630,7 +815,9 @@ http://127.0.0.1:8000
 🎨 Frontend Setup
 
 cd frontend
+
 npm install
+
 npm run dev
 
 Frontend:
@@ -659,28 +846,64 @@ Use the Authorize button in Swagger to provide the JWT Bearer token.
 
 📮 Postman
 
-Postman collection structure:
+Recommended Postman collection structure:
+
+Folder
+
+APIs
 
 01 Authentication
+
+Register, Login
+
 02 Users
+
+User management
+
 03 Categories
+
+Category CRUD
+
 04 Products
+
+Product CRUD
+
 05 Customers
+
+Customer CRUD
+
 06 Pricing Rules
+
+Rule management
+
 07 Promotions
+
+Promotion management
+
 08 Pricing
+
+Pricing calculation
+
 09 Rule Testing
+
+Rule simulation
+
 10 Pricing History
+
+Calculation history
+
 11 Dashboard
 
-Configure:
+Analytics
+
+Configure the Postman environment:
 
 base_url = http://127.0.0.1:8000
 token    = <JWT access token>
 
 🧪 Testing
 
-Backend tests:
+Run backend tests:
 
 cd backend
 pytest
@@ -705,31 +928,19 @@ Pricing Engine
 
 🔄 API Workflow
 
-Authenticate
-     ↓
-Select Product
-     ↓
-Select Customer
-     ↓
-Submit Quantity
-     ↓
-Load Active Pricing Rules
-     ↓
-Evaluate Conditions
-     ↓
-Resolve Priority / Conflicts
-     ↓
-Apply Discounts
-     ↓
-Validate Promotion
-     ↓
-Apply Tax
-     ↓
-Calculate Final Price
-     ↓
-Save Pricing History
-     ↓
-Return Pricing Breakdown
+flowchart TD
+    A[Authenticate] --> B[Select Product]
+    B --> C[Select Customer]
+    C --> D[Submit Quantity]
+    D --> E[Load Active Pricing Rules]
+    E --> F[Evaluate Conditions]
+    F --> G[Resolve Priority and Conflicts]
+    G --> H[Apply Discounts]
+    H --> I[Validate Promotion]
+    I --> J[Apply Tax]
+    J --> K[Calculate Final Price]
+    K --> L[Save Pricing History]
+    L --> M[Return Pricing Breakdown]
 
 ⚡ Performance & Scalability
 
@@ -853,19 +1064,20 @@ Unit Testing
 
 📸 Screenshots
 
-Recommended screenshots:
+Recommended project screenshots:
 
 docs/
 ├── dashboard.png
 ├── products.png
 ├── customers.png
+├── categories.png
 ├── pricing-rules.png
 ├── promotions.png
 ├── calculator.png
 ├── pricing-history.png
 └── rule-testing.png
 
-Add them using:
+Add screenshots using:
 
 ![Dashboard](docs/dashboard.png)
 
@@ -885,7 +1097,7 @@ Add them using:
 
 ↩️ Rule rollback
 
-🧪 Full pricing-simulation mode
+🧪 Full pricing simulation mode
 
 📦 Bulk product import
 
@@ -898,6 +1110,8 @@ Add them using:
 📡 Event-driven pricing updates
 
 📄 Documentation
+
+Project documentation can include:
 
 Swagger_API_Documentation.md
 Dynamic_Pricing_Business_Rules_Engine.postman_collection.json
@@ -914,29 +1128,53 @@ Dynamic_Pricing_Business_Rules_Engine.postman_collection.json
 
 👨‍💻 Author
 
-Praburam R
+<h2 align="center">Praburam R</h2>
 
-Python Developer | FastAPI | React | MySQL | REST APIs
+<p align="center">
+  Python Developer • FastAPI • React • MySQL • REST APIs
+</p>
 
 Skills Demonstrated
 
-Python
-FastAPI
-REST API Development
-SQLAlchemy
-MySQL
+Area
+
+Technologies
+
+Backend
+
+Python, FastAPI
+
+Database
+
+MySQL, SQLAlchemy
+
+Caching
+
 Redis
-JWT Authentication
-RBAC
-React
-TypeScript
-Material UI
-Docker
+
+Security
+
+JWT, RBAC, bcrypt
+
+Frontend
+
+React, TypeScript, Material UI
+
+API
+
+REST, Swagger, Postman
+
+DevOps
+
+Docker, Docker Compose
+
+Database Migration
+
 Alembic
-Swagger
-Postman
-Business Rule Engines
-Dynamic Pricing
+
+Business Logic
+
+Dynamic Pricing, Rule Engine
 
 <p align="center">
   <strong>⚡ Dynamic Rules. Smarter Pricing. Scalable Architecture.</strong>
